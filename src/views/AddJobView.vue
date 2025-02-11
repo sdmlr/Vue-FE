@@ -196,7 +196,7 @@ const handleSubmit = () => {
             >
             <input
               type="tel"
-              v-model="form.company.contactEmail"
+              v-model="form.company.ContactPhone"
               id="contact_phone"
               name="contact_phone"
               class="border rounded w-full py-2 px-3"
