@@ -1,19 +1,40 @@
 <script setup>
-  import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
-  import BackButton from '@/components/BackButton.vue';
-  import { reactive, onMounted } from 'vue';
-  import { useRoute, RouterLink } from 'vue-router';
-  import axios from 'axios';
+import PulseLoader from "vue-spinner/src/PulseLoader.vue";
+import BackButton from "@/components/BackButton.vue";
+import { reactive, onMounted } from "vue";
+import { useRoute, RouterLink, useRouter } from "vue-router";
+import { useToast } from "vue-toastification";
+import axios from "axios";
 
-  const route = useRoute()
-  const jobId = route.params.id
+const route = useRoute();
+const router = useRouter();
+const toast = useToast();
 
-  const state = reactive({
-    job: {},
-    isLoading: true,
-  });
+const jobId = route.params.id;
 
-  onMounted(() => {
+const state = reactive({
+  job: {},
+  isLoading: true,
+});
+
+const deleteJob = () => {
+  const confirm = window.confirm("Are you sure you want to delte this job?");
+
+  if (confirm) {
+    axios
+      .delete(`/api/jobs/${jobId}`)
+      .then(() => {
+        toast.success("Job Deleted Successfully");
+        router.push("/jobs");
+      })
+      .catch((error) => {
+        console.error("Error deleting job", error);
+        toast.error("Job Not Deleted");
+      });
+  }
+};
+
+onMounted(() => {
   axios
     .get(`/api/jobs/${jobId}`)
     .then((response) => {
@@ -42,9 +63,7 @@
             <div
               class="text-gray-500 mb-4 flex align-middle justify-center md:justify-start"
             >
-              <i
-                class="pi pi-map-marker text-xl text-orange-700 mr-2"
-              ></i>
+              <i class="pi pi-map-marker text-xl text-orange-700 mr-2"></i>
               <p class="text-orange-700">{{ state.job.location }}</p>
             </div>
           </div>
@@ -86,7 +105,9 @@
 
             <h3 class="text-xl">Contact Phone:</h3>
 
-            <p class="my-2 bg-green-100 p-2 font-bold">5{{ state.job.company.contactPhone }}</p>
+            <p class="my-2 bg-green-100 p-2 font-bold">
+              5{{ state.job.company.contactPhone }}
+            </p>
           </div>
 
           <!-- Manage -->
@@ -98,6 +119,7 @@
               >Edit Job</RouterLink
             >
             <button
+              @click="deleteJob"
               class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block"
             >
               Delete Job
@@ -109,6 +131,6 @@
   </section>
   <!-- Show loading spinner while loading is true -->
   <div v-else class="text-center text-gray-500 py-6">
-        <PulseLoader />
-       </div>
+    <PulseLoader />
+  </div>
 </template>
