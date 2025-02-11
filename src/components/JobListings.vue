@@ -19,7 +19,7 @@ const state = reactive({
 
 onMounted(() => {
   axios
-    .get("http://localhost:5000/jobs")
+    .get("/api/jobs")
     .then((response) => {
       state.jobs = response.data;
     })

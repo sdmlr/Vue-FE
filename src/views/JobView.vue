@@ -15,7 +15,7 @@
 
   onMounted(() => {
   axios
-    .get(`http://localhost:5000/jobs/${jobId}`)
+    .get(`/api/jobs/${jobId}`)
     .then((response) => {
       state.job = response.data;
     })
